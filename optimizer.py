@@ -44,7 +44,6 @@ class AdamW(Optimizer):
 
                 # Access hyperparameters from the `group` dictionary.
                 alpha = group["lr"]
-
                 # Complete the implementation of AdamW here, reading and saving
                 # your state in the `state` dictionary above.
                 # The hyperparameters can be read from the `group` dictionary
@@ -60,7 +59,37 @@ class AdamW(Optimizer):
                 # Refer to the default project handout for more details.
 
                 ### TODO
-                raise NotImplementedError
+                # Retrieve the state dictionary
+                if len(state) == 0:
+                    state['step'] = 0
+                    state['exp_avg'] = torch.zeros_like(p.data)
+                    state['exp_avg_sq'] = torch.zeros_like(p.data)
+                    theta = group["params"]
+                
+                state['step'] += 1
+                exp_avg, exp_avg_sq = state['exp_avg'], state['exp_avg_sq']
+                beta1, beta2 = group['betas']
+                weight_decay = group['weight_decay']
+                eps = group['eps']
 
+                # Compute decayed averages of both the first moment (the gradient) and the squared gradient
+                exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
+                exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1 - beta2)
+
+                # Compute bias-corrected first and second moment estimates
+                bias_correction1 = 1 - beta1 ** state['step']
+                bias_correction2 = 1 - beta2 ** state['step']
+                corrected_exp_avg = exp_avg / (1 - beta1 ** state['step'])
+                corrected_exp_avg_sq = exp_avg_sq / (1 - beta2 ** state['step'])
+                alpha_t = alpha * (math.sqrt(bias_correction2) / bias_correction1)
+
+                # Update parameters including the weight decay
+                denom = corrected_exp_avg_sq.sqrt().add_(eps)
+                step_size = alpha_t
+                p.data.addcdiv_(corrected_exp_avg, denom, value=-step_size)
 
         return loss
+        raise NotImplementedError
+
+
+        
