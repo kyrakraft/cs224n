@@ -135,7 +135,7 @@ class MultitaskBERT(nn.Module):
         ### TODO
         first_embeddings = self.forward(input_ids_1, attention_mask_1)
         second_embeddings = self.forward(input_ids_2, attention_mask_2)
-        concatenated_embeddings = torch.cat([embeddings_1, embeddings_2], dim=1)
+        concatenated_embeddings = torch.cat([first_embeddings, second_embeddings], dim=1)
         logits = self.similarity_regressor(concatenated_embeddings)
         return logits
 
