@@ -173,8 +173,9 @@ def train_multitask(args):
     sst_train_data = SentenceClassificationDataset(sst_train_data, args)
     sst_dev_data = SentenceClassificationDataset(sst_dev_data, args)
 
-    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size,
-                                      collate_fn=sst_train_data.collate_fn)
+    #Pin memory to improve speed! 
+    sst_train_dataloader = DataLoader(sst_train_data, shuffle=True, batch_size=args.batch_size, 
+                                      collate_fn=sst_train_data.collate_fn, num_workers=4, pin_memory=True)
     sst_dev_dataloader = DataLoader(sst_dev_data, shuffle=False, batch_size=args.batch_size,
                                     collate_fn=sst_dev_data.collate_fn)
 
