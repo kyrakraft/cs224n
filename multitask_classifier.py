@@ -78,18 +78,15 @@ class MultitaskBERT(nn.Module):
         self.similarity_regressor = nn.Linear(BERT_HIDDEN_SIZE * 2, 1) 
       
 
-
    def forward(self, input_ids, attention_mask):
-        'Takes a batch of sentences and produces embeddings for them.'
         # The final BERT embedding is the hidden state of [CLS] token (the first token)
         # Here, you can start by just returning the embeddings straight from BERT.
         # When thinking of improvements, you can later try modifying this
         # (e.g., by adding other layers).
         ### TODO
-
         #First call the BERT modele to get hidden states 
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-
+       
         #Pull the embedding of the CLS token with represneted the entire sequence and qill be used later
         return outputs.last_hidden_state[:, 0, :]
         
